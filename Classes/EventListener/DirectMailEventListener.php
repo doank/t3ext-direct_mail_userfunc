@@ -1,81 +1,65 @@
 <?php
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with TYPO3 source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
 
-namespace Causal\DirectMailUserfunc\Hook;
+namespace Causal\DirectMailUserfunc\EventListener;
 
 use Causal\DirectMailUserfunc\Utility\ItemsProcFunc;
+use DirectMailTeam\DirectMail\Event\DmailCompileMailGroupEvent;
+use DirectMailTeam\DirectMail\Event\RecipientListCompileMailGroupEvent;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
-/**
- * This class hooks into direct_mail to post-process the list of recipients.
- *
- * @category    Hook
- * @author      Xavier Perseguers <xavier@causal.ch>
- * @copyright   2014-2025 Causal Sàrl
- * @license     https://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
- */
-class DirectMail
+class DirectMailEventListener
 {
-
     /**
      * Post-processes the list of recipients.
      *
-     * @param array $id_lists
-     * @param \DirectMailTeam\DirectMail\Module\RecipientList|\DirectMailTeam\DirectMail\Module\Dmail $pObj parent object
-     * @param array $groups
-     * @return array
+     * @param RecipientListCompileMailGroupEvent $event
+     * @return void
      */
-    public function cmd_compileMailGroup_postProcess(array $id_lists, $pObj, array $groups): array
+    public function compileRecipientList(
+        RecipientListCompileMailGroupEvent|DmailCompileMailGroupEvent $event
+    ): void
     {
         $mailGroups = [];
 
-        if (!isset($groups['uid'])) {
-            // Coming from mod2 (Dmail)
+        $groups = $event->getMailGroup();
+        $idLists = $event->getIdLists();
+
+        if ($event instanceof DmailCompileMailGroupEvent) {
             foreach ($groups as $group) {
-                \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($group);
+                MathUtility::convertToPositiveInteger($group);
                 if (!$group) {
                     continue;
                 }
 
-                $mailGroup = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('sys_dmail_group', $group);
+                $mailGroup = BackendUtility::getRecord('sys_dmail_group', $group);
                 if (is_array($mailGroup)) {
                     $mailGroups[] = $mailGroup;
                 }
             }
         } else {
-            // Coming from mod5 (RecipientList)
             $mailGroups[] = $groups;
         }
 
         foreach ($mailGroups as $mailGroup) {
-            if ((int)$mailGroup['type'] === 5) {
-                $recipientList = $this->generateRecipientList($mailGroup, $pObj);
-                $id_lists = array_merge_recursive($id_lists, $recipientList);
+            if ($mailGroup['type'] === 5) {
+                $recipientList = $this->generateRecipientList($mailGroup);
+                $idLists = array_merge_recursive($idLists, $recipientList);
             }
         }
 
-        return $id_lists;
+        $event->setIdLists($idLists);
     }
 
     /**
      * Generates the list of recipients.
      *
      * @param array $mailGroup
-     * @param object $pObj parent object
      * @return array
      */
-    protected function generateRecipientList(array $mailGroup, $pObj): array
+    protected function generateRecipientList(array $mailGroup): array
     {
         $recipientList = [
             'tt_address' => [],
@@ -99,16 +83,9 @@ class DirectMail
                 'lists' => &$recipientList,
                 'userParams' => $userParams,
             ];
-            GeneralUtility::callUserFunction($itemsProcFunc, $params, $pObj);
+            GeneralUtility::callUserFunction($itemsProcFunc, $params);
 
-            $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-                ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-                : TYPO3_branch;
-            if (version_compare($typo3Branch, '9.5', '<')) {
-                $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['direct_mail_userfunc']);
-            } else {
-                $extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class)->get('direct_mail_userfunc');
-            }
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('direct_mail_userfunc');
             if ((bool)$extConf['makeEntriesUnique']) {
                 // Make unique entries
                 $recipientList['tt_address'] = array_unique($recipientList['tt_address']);

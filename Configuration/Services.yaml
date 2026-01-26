@@ -1,0 +1,19 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Causal\DirectMailUserfunc\:
+    resource: '../Classes/*'
+
+  Causal\DirectMailUserfunc\EventListener\DirectMailEventListener:
+    tags:
+      - name: event.listener
+        identifier: 'causal/direct_mail_userfunc/directmaileventlistener1'
+        method: 'compileRecipientList'
+        event: DirectMailTeam\DirectMail\Event\RecipientListCompileMailGroupEvent
+      - name: event.listener
+        identifier: 'causal/direct_mail_userfunc/directmaileventlistener2'
+        method: 'compileRecipientList'
+        event: DirectMailTeam\DirectMail\Event\DmailCompileMailGroupEvent

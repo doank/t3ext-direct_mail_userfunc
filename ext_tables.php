@@ -7,10 +7,6 @@ defined('TYPO3_MODE') || defined('TYPO3') || die();
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['userFunc'] = [];
     }
 
-    // Register hook into direct_mail
-    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['direct_mail']['mod2']['cmd_compileMailGroup'][] = \Causal\DirectMailUserfunc\Hook\DirectMail::class;
-    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['direct_mail']['mod3']['cmd_compileMailGroup'][] = \Causal\DirectMailUserfunc\Hook\DirectMail::class;
-
     // Register a custom data provider for \TYPO3\CMS\Backend\Form\FormEngine
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord']
         [\Causal\DirectMailUserfunc\FormEngine\FormDataProvider\DatabaseEditVirtualRow::class] = [
