@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @category    Utility
  * @author      Xavier Perseguers <xavier@causal.ch>
- * @copyright   2018-2025 Causal Sàrl
+ * @copyright   2018-2026 Causal Sàrl
  * @license     https://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
  */
 class TcaUtility

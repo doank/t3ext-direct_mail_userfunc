@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
  *
  * @category    FormEngine\FieldWizard
  * @author      Xavier Perseguers <xavier@causal.ch>
- * @copyright   2012-2025 Causal Sàrl
+ * @copyright   2012-2026 Causal Sàrl
  * @license     https://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
  */
 class JsProviderWizard extends AbstractNode

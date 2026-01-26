@@ -3,8 +3,6 @@
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. include:: Includes.txt
-
 
 .. _start:
 
@@ -30,7 +28,7 @@ External Providers for Direct Mail
       direct_mail, dynamic list, user function, external provider
 
    :Copyright:
-      2009-2025
+      2009-2026
 
    :Author:
       Xavier Perseguers

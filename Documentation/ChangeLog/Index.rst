@@ -3,8 +3,6 @@
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. include:: ../Includes.txt
-
 
 .. _changelog:
 
@@ -18,6 +16,7 @@ The following is a very high level overview of the changes in this extension. Fo
 =======  ===========================================================================
 Version  Changes
 =======  ===========================================================================
+2.4      Support for TYPO3 v12 (requires 12.x-compatible direct_mail)
 2.3      Support for TYPO3 v11
 2.2      Support for TYPO3 v10
 2.1      Support for TYPO3 v9
