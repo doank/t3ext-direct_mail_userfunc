@@ -35,8 +35,8 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "2.5.x-dev",
-      "dev-TYPO3v11": "2.4.x-dev"
+      "dev-master": "2.4.x-dev",
+      "dev-TYPO3v11": "2.3.x-dev"
     },
     "typo3/cms": {
       "extension-key": "direct_mail_userfunc"
