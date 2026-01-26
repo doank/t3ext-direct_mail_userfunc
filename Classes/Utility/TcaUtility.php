@@ -149,7 +149,7 @@ class TcaUtility
     public static function resetTCA()
     {
         foreach ($GLOBALS['TCA']['sys_dmail_group']['columns'] as $field => $_) {
-            if (GeneralUtility::isFirstPartOfStr($field, TcaUtility::VIRTUAL_PREFIX)) {
+            if (str_starts_with($field, TcaUtility::VIRTUAL_PREFIX)) {
                 unset($GLOBALS['TCA']['sys_dmail_group']['columns'][$field]);
             }
         }

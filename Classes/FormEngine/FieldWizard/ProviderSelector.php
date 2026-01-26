@@ -17,6 +17,7 @@ namespace Causal\DirectMailUserfunc\FormEngine\FieldWizard;
 use Causal\DirectMailUserfunc\Utility\ItemsProcFunc;
 use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Type\Bitmask\JsConfirmation;
 
 /**
@@ -59,28 +60,17 @@ class ProviderSelector extends AbstractNode
         }
 
         $providerElID = 'providerSelector' . $this->data['vanillaUid'];
-        $updateJS = 'var itemsProcFunc = $(\'#' . $providerElID . '\').val();';
-        $updateJS .= '$(\'[data-formengine-input-name="' . $this->data['parameterArray']['itemFormElName'] . '"]\').val(itemsProcFunc);';
-        $updateJS .= implode('', $this->data['parameterArray']['fieldChangeFunc']);
-        // Automatically reload edit form
-        if ($this->getBackendUserAuthentication()->jsConfirmation(JsConfirmation::TYPE_CHANGE)) {
-            $alertMsgOnChange = 'top.TYPO3.Modal.confirm('
-                . 'TYPO3.lang["FormEngine.refreshRequiredTitle"],'
-                . ' TYPO3.lang["FormEngine.refreshRequiredContent"]'
-                . ')'
-                . '.on('
-                . '"button.clicked",'
-                . ' function(e) { if (e.target.name == "ok") { $("button[name=\"_savedok\"]").click(); } top.TYPO3.Modal.dismiss(); }'
-                . ');';
-        } else {
-            $alertMsgOnChange = '$("button[name=\"_savedok\"]").click();';
-        }
 
-        $updateJS .= $alertMsgOnChange;
+        $resultArray['javaScriptModules'][] = JavaScriptModuleInstruction::create(
+            '@causal/direct_mail_userfunc/provider-selector.js'
+        )->instance([
+            'providerId' => $providerElID,
+            'selectorName' => $this->data['parameterArray']['itemFormElName'],
+        ]);
 
         // Class "form-control" is for sure useless in TYPO3 v11
         $selector = '
-            <select class="form-control form-select form-control-adapt" id="' . $providerElID . '" onchange="' . htmlspecialchars($updateJS) . '">
+            <select class="form-control form-select form-control-adapt" id="' . $providerElID . '">
                 <option value=""></option>' .
             implode('', $options) . '
             </select>
@@ -99,9 +89,8 @@ class ProviderSelector extends AbstractNode
         $out[] =    '</div>';
         $out[] = '</div>';
 
-        return [
-            'html' => implode(LF, $out),
-        ];
+        $resultArray['html'] = implode(LF, $out);
+        return $resultArray;
     }
 
     /**
