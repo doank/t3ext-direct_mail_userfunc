@@ -25,8 +25,8 @@
   "require": {
     "php": ">= 8.1.0, <= 8.4.99",
     "ext-json": "*",
-    "typo3/cms-core": "^12",
-    "directmailteam/direct-mail": "dev-master || 12.x-dev"
+    "typo3/cms-core": "^12 || ^13",
+    "directmailteam/direct-mail": "dev-master || 12.x-dev || 13.x-dev"
   },
   "autoload": {
     "psr-4": {
