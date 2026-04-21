@@ -23,7 +23,7 @@ class InvokeUserJsControl extends AbstractNode
     /**
      * @return array
      */
-    public function render()
+    public function render(): array
     {
         $result = [];
 

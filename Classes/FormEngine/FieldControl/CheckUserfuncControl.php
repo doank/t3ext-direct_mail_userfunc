@@ -23,7 +23,7 @@ class CheckUserfuncControl extends AbstractNode
     /**
      * @return array
      */
-    public function render()
+    public function render(): array
     {
         // TODO: Evaluate dynamically when the provider is updated
         //       @see https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/FormEngine/Rendering/Index.html#formengine-rendering-nodeexpansion

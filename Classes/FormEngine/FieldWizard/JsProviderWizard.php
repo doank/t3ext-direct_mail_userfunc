@@ -32,7 +32,7 @@ class JsProviderWizard extends AbstractNode
     /**
      * @return array
      */
-    public function render()
+    public function render(): array
     {
         if (!count($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['direct_mail_userfunc']['userFunc'])) {
             return [];
